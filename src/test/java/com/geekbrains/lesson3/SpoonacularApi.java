@@ -15,24 +15,46 @@ public class SpoonacularApi extends LogMain {
 
     @Test
     void getVegetarianBurger() {
+        String burger1 = "Falafel Burger";
+        String burger2 = "Butternut Squash Quinoa Burgers";
+        String burger3 = "Walnut Lentil Burgers with Tarragon";
         given()
 
-                .queryParam("apiKey", apiKey)
-                .queryParam("query", "burger")
+                .queryParam("apiKey", apiKey).queryParam("query", "burger")
                 .queryParam("diet", "vegetarian")
-                .expect()
-                .body("totalResults", equalTo(3) )
+                .expect().body("totalResults", equalTo(3))
                 .body("results[0].title", equalTo("Falafel Burger"))
-                .body("results[0].title", either(containsString("Falafel Burger"))
-                        .or(containsString("Butternut Squash Quinoa Burgers"))
-                        .or(containsString("Walnut Lentil Burgers with Tarragon")))
+                .body("results[0].title", either(containsString(burger1))
+                        .or(containsString(burger2)).or(containsString(burger3)))
+                .body("results[1].title", either(containsString(burger1)).or(containsString(burger2))
+                        .or(containsString(burger3)))
+                .body("results[2].title", either(containsString(burger1))
+                        .or(containsString(burger2)).or(containsString(burger3)))
 
                 .when()
                 .get(basUrlComplexSearch)
-                //.get("https://api.spoonacular.com/recipes/complexSearch?apiKey=df2219f24e154c74a4f6fe17042f7edd&query=burger&diet=vegetarian")
                 .then()
                 .statusCode(200);
 
+    }
+
+    @Test
+    void get2() {
+
+    }
+
+    @Test
+    void get3() {
+
+    }
+
+    @Test
+    void get4() {
+
+    }
+
+    @Test
+    void get5() {
 
     }
 
