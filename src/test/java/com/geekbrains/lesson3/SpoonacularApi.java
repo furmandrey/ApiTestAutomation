@@ -1,5 +1,6 @@
 package com.geekbrains.lesson3;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
@@ -30,11 +31,12 @@ public class SpoonacularApi extends LogMain {
                         .or(containsString(burger3)))
                 .body("results[2].title", either(containsString(burger1))
                         .or(containsString(burger2)).or(containsString(burger3)))
-
+                .header("Connection", "keep-alive")
                 .when()
                 .get(basUrlComplexSearch)
                 .then()
-                .statusCode(200);
+                .statusCode(200)
+                .time(Matchers.lessThan(6000L));
 
     }
 
