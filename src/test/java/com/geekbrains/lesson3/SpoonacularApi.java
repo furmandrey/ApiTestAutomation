@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.Matchers.arrayContainingInAnyOrder;
+import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasSize;
 
 
@@ -16,6 +16,7 @@ public class SpoonacularApi extends LogMain {
 
     private final String apiKey = "df2219f24e154c74a4f6fe17042f7edd";
     private final String basUrlComplexSearch = "https://api.spoonacular.com/recipes/complexSearch";
+    private final String basURLrecipesCuisine = "https://api.spoonacular.com/recipes/cuisine";
 
     @Test
     void getVegetarianBurger() {
@@ -135,6 +136,64 @@ public class SpoonacularApi extends LogMain {
                 .then()
                 .statusCode(200)
                 .time(Matchers.lessThan(6000L));
+    }
+
+    @Test
+    void postFalafelBurger(){
+        given()
+                .queryParam("apiKey", apiKey)
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .formParam("title", "Falafel Burger")
+                .expect()
+                .body("cuisine", equalTo("Middle Eastern"))
+                .body("confidence", equalTo(0.85F))
+                //.body("results[0].missedIngredients[0].amount", equalTo(0.25F))
+                .header("Content-Type", "application/json")
+                .when()
+                .post(basURLrecipesCuisine)
+                //.prettyPeek()
+                .then()
+                .statusCode(200)
+                .time(Matchers.lessThan(6000L));
+
+    }
+
+    @Test
+    void postThaiPastaSalad(){
+        String cuisine1 = "Asian";
+        String cuisine2 = "Thai";
+
+        given()
+                .queryParam("apiKey", apiKey)
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .formParam("title", "Thai Pasta Salad")
+                .expect()
+                .body( "cuisines", hasItems("Asian", "Thai" ))
+                .body("confidence", equalTo(0.85F))
+                //.body("results[0].missedIngredients[0].amount", equalTo(0.25F))
+                .header("Content-Type", "application/json")
+                .when()
+                .post(basURLrecipesCuisine)
+                //.prettyPeek()
+                .then()
+                .statusCode(200)
+                .time(Matchers.lessThan(6000L));
+
+    }
+
+    @Test
+    void post3(){
+
+    }
+
+    @Test
+    void post4(){
+
+    }
+
+    @Test
+    void post5(){
+
     }
 
     @AfterAll
