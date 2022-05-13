@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasSize;
 
 
@@ -147,7 +146,6 @@ public class SpoonacularApi extends LogMain {
                 .expect()
                 .body("cuisine", equalTo("Middle Eastern"))
                 .body("confidence", equalTo(0.85F))
-                //.body("results[0].missedIngredients[0].amount", equalTo(0.25F))
                 .header("Content-Type", "application/json")
                 .when()
                 .post(basURLrecipesCuisine)
@@ -168,9 +166,8 @@ public class SpoonacularApi extends LogMain {
                 .header("Content-Type", "application/x-www-form-urlencoded")
                 .formParam("title", "Thai Pasta Salad")
                 .expect()
-                .body( "cuisines", hasItems("Asian", "Thai" ))
+                .body( "cuisines", hasItems(cuisine1, cuisine2 ))
                 .body("confidence", equalTo(0.85F))
-                //.body("results[0].missedIngredients[0].amount", equalTo(0.25F))
                 .header("Content-Type", "application/json")
                 .when()
                 .post(basURLrecipesCuisine)
@@ -182,17 +179,65 @@ public class SpoonacularApi extends LogMain {
     }
 
     @Test
-    void post3(){
+    void postJensSwedishMeatballs(){
+        String cuisine1 = "Scandinavian";
+        String cuisine2 = "European";
+        String cuisine3 = "Nordic";
 
+        given()
+                .queryParam("apiKey", apiKey)
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .formParam("title", "Jen's Swedish Meatballs")
+                .expect()
+                .body( "cuisines", hasItems(cuisine1, cuisine2, cuisine3 ))
+                .body("confidence", equalTo(0.85F))
+                //.body("results[0].missedIngredients[0].amount", equalTo(0.25F))
+                .header("Content-Type", "application/json")
+                .when()
+                .post(basURLrecipesCuisine)
+                //.prettyPeek()
+                .then()
+                .statusCode(200)
+                .time(Matchers.lessThan(6000L));
     }
 
     @Test
-    void post4(){
+    void postMangoFriedRice(){
+        String cuisine1 = "Asian";
+        String cuisine2 = "Chinese";
 
+        given()
+                .queryParam("apiKey", apiKey)
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .formParam("title", "Mango Fried Rice")
+                .expect()
+                .body( "cuisines", hasItems(cuisine1, cuisine2 ))
+                .body("confidence", equalTo(0.85F))
+                .header("Content-Type", "application/json")
+                .when()
+                .post(basURLrecipesCuisine)
+                //.prettyPeek()
+                .then()
+                .statusCode(200)
+                .time(Matchers.lessThan(6000L));
     }
 
     @Test
-    void post5(){
+    void postAfricanChickenPeanutStew(){
+        given()
+                .queryParam("apiKey", apiKey)
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .formParam("title", "African Chicken Peanut Stew")
+                .expect()
+                .body("cuisine", equalTo("African"))
+                .body("confidence", equalTo(0.85F))
+                .header("Content-Type", "application/json")
+                .when()
+                .post(basURLrecipesCuisine)
+                //.prettyPeek()
+                .then()
+                .statusCode(200)
+                .time(Matchers.lessThan(6000L));
 
     }
 
