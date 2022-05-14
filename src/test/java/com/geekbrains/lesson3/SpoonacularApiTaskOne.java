@@ -11,11 +11,12 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 
 
-public class SpoonacularApi extends LogMain {
+public class SpoonacularApiTaskOne extends LogMain {
 
     private final String apiKey = "df2219f24e154c74a4f6fe17042f7edd";
-    private final String basUrlComplexSearch = "https://api.spoonacular.com/recipes/complexSearch";
-    private final String basURLrecipesCuisine = "https://api.spoonacular.com/recipes/cuisine";
+    private final String basUrl = "https://api.spoonacular.com";
+    private final String urlComplexSearch = "/recipes/complexSearch";
+    private final String urlrecipesCuisine = "/recipes/cuisine";
 
     @Test
     void getVegetarianBurger() {
@@ -38,7 +39,7 @@ public class SpoonacularApi extends LogMain {
                         .or(containsString(burger2)).or(containsString(burger3)))
                 .header("Connection", "keep-alive")
                 .when()
-                .get(basUrlComplexSearch)
+                .get(basUrl+urlComplexSearch)
                 .then()
                 .statusCode(200)
                 .time(Matchers.lessThan(6000L));
@@ -65,7 +66,7 @@ public class SpoonacularApi extends LogMain {
                         .or(containsString(burger2)).or(containsString(burger3)))
                 .header("Connection", "keep-alive")
                 .when()
-                .get(basUrlComplexSearch)
+                .get(basUrl+urlComplexSearch)
                 .then()
                 .statusCode(200)
                 .time(Matchers.lessThan(6000L));
@@ -84,7 +85,7 @@ public class SpoonacularApi extends LogMain {
                 .body("results", hasSize(0))
                 .header("Connection", "keep-alive")
                 .when()
-                .get(basUrlComplexSearch)
+                .get(basUrl+urlComplexSearch)
                 .then()
                 .statusCode(200)
                 .time(Matchers.lessThan(6000L));
@@ -110,7 +111,7 @@ public class SpoonacularApi extends LogMain {
                         .or(containsString(drink2)))
                 .header("Connection", "keep-alive")
                 .when()
-                .get(basUrlComplexSearch)
+                .get(basUrl+urlComplexSearch)
                 //.prettyPeek()
                 .then()
                 .statusCode(200)
@@ -131,7 +132,7 @@ public class SpoonacularApi extends LogMain {
                 .body("results[0].missedIngredients[0].amount", equalTo(0.25F))
                 .header("Connection", "keep-alive")
                 .when()
-                .get(basUrlComplexSearch)
+                .get(basUrl+urlComplexSearch)
                 .then()
                 .statusCode(200)
                 .time(Matchers.lessThan(6000L));
@@ -148,7 +149,7 @@ public class SpoonacularApi extends LogMain {
                 .body("confidence", equalTo(0.85F))
                 .header("Content-Type", "application/json")
                 .when()
-                .post(basURLrecipesCuisine)
+                .post(basUrl+urlrecipesCuisine)
                 //.prettyPeek()
                 .then()
                 .statusCode(200)
@@ -170,7 +171,7 @@ public class SpoonacularApi extends LogMain {
                 .body("confidence", equalTo(0.85F))
                 .header("Content-Type", "application/json")
                 .when()
-                .post(basURLrecipesCuisine)
+                .post(basUrl+urlrecipesCuisine)
                 //.prettyPeek()
                 .then()
                 .statusCode(200)
@@ -194,7 +195,7 @@ public class SpoonacularApi extends LogMain {
                 //.body("results[0].missedIngredients[0].amount", equalTo(0.25F))
                 .header("Content-Type", "application/json")
                 .when()
-                .post(basURLrecipesCuisine)
+                .post(basUrl+urlrecipesCuisine)
                 //.prettyPeek()
                 .then()
                 .statusCode(200)
@@ -215,7 +216,7 @@ public class SpoonacularApi extends LogMain {
                 .body("confidence", equalTo(0.85F))
                 .header("Content-Type", "application/json")
                 .when()
-                .post(basURLrecipesCuisine)
+                .post(basUrl+urlrecipesCuisine)
                 //.prettyPeek()
                 .then()
                 .statusCode(200)
@@ -233,7 +234,7 @@ public class SpoonacularApi extends LogMain {
                 .body("confidence", equalTo(0.85F))
                 .header("Content-Type", "application/json")
                 .when()
-                .post(basURLrecipesCuisine)
+                .post(basUrl+urlrecipesCuisine)
                 //.prettyPeek()
                 .then()
                 .statusCode(200)
