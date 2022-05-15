@@ -28,13 +28,15 @@ public class SpoonacularApiTaskTwo extends LogMain{
                         + " \"value\": {\n"
                         + " \"ingredients\": [\n"
                         + " {\n"
-                        + " \"name\": \"1 banana\"\n"
+                        + " \"name\": \"1 banana\",\n"
+                        + " \"name\": \"1 potato\"\n"
                         + " }\n"
                         + " ]\n"
                         + " }\n"
                         + "}")
                 .when()
                 .post(basUrl+urlMealplannerAddItems)
+                .prettyPeek()
                 .then()
                 .statusCode(200)
                 .extract()
@@ -42,15 +44,22 @@ public class SpoonacularApiTaskTwo extends LogMain{
                 .get("id")
                 .toString();
     }
-//    @AfterEach
-//    void tearDown() {
-//        given()
-//                .queryParam("hash", hash)
-//                .queryParam("apiKey", apiKey)
-//                .delete("https://api.spoonacular.com/mealplanner/geekbrains/items/" + id)
-//                .then()
-//                .statusCode(200);
-//    }
+    @AfterEach
+    void tearDown() {
+        given()
+                .queryParam("hash", hash)
+                .queryParam("apiKey", apiKey)
+                .body(
+                        "{\n"
+                                + " \"username\":" + userName + ",\n"
+                                + " \"id\":" + id + ",\n"
+                                + " \"hash\":" + hash + ",\n"
+                                + "}"
+                )
+                .delete(basUrl+urlMealplannerAddItems+"/" + id)
+                .then()
+                .statusCode(200);
+    }
 
 
 
