@@ -7,19 +7,14 @@ import static io.restassured.RestAssured.given;
 
 public class SpoonacularApiTaskTwo extends LogMain{
 
-    private final String apiKey = "df2219f24e154c74a4f6fe17042f7edd";
-    private final String basUrl = "https://api.spoonacular.com";
-    private final String userName = "username-qwerty";
-    private final String urlMealplannerAddItems = "/mealplanner/"+ userName +"/items";
-    private final String hash = "f0a1f52fe8416496440363157a4d99f2ac2efc52";
-
+    private final String urlMealplannerAddItems = "/mealplanner/"+ (properties.getProperty("userName")) + "/items";
     private String id;
 
     @Test
     void addItemToMealPlan(){
         id = given()
-                .queryParam("hash", hash)
-                .queryParam("apiKey", apiKey)
+                .queryParam("hash", properties.getProperty("hash"))
+                .queryParam("apiKey", properties.getProperty("apiKey"))
                 .body("{\n"
                         + " \"date\": 20220514,\n"
                         + " \"slot\": 1,\n"
@@ -35,8 +30,8 @@ public class SpoonacularApiTaskTwo extends LogMain{
                         + " }\n"
                         + "}")
                 .when()
-                .post(basUrl+urlMealplannerAddItems)
-                .prettyPeek()
+                .post(properties.getProperty("basUrl") + urlMealplannerAddItems)
+                //.prettyPeek()
                 .then()
                 .statusCode(200)
                 .extract()
@@ -47,23 +42,18 @@ public class SpoonacularApiTaskTwo extends LogMain{
     @AfterEach
     void tearDown() {
         given()
-                .queryParam("hash", hash)
-                .queryParam("apiKey", apiKey)
+                .queryParam("hash", properties.getProperty("hash"))
+                .queryParam("apiKey", properties.getProperty("apiKey"))
                 .body(
                         "{\n"
-                                + " \"username\":" + userName + ",\n"
+                                + " \"username\":" + (properties.getProperty("userName")) + ",\n"
                                 + " \"id\":" + id + ",\n"
-                                + " \"hash\":" + hash + ",\n"
+                                + " \"hash\":" + properties.getProperty("hash") + ",\n"
                                 + "}"
                 )
-                .delete(basUrl+urlMealplannerAddItems+"/" + id)
+                .delete(properties.getProperty("basUrl") + urlMealplannerAddItems + "/" + id)
                 .then()
                 .statusCode(200);
     }
-
-
-
-
-
 
 }
