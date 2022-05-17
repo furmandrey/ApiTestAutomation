@@ -1,5 +1,6 @@
 package com.geekbrains.lesson4;
 
+import io.restassured.http.ContentType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -53,7 +54,8 @@ public class SpoonacularApiTaskTwo extends LogMain{
                 )
                 .delete(properties.getProperty("basUrl") + urlMealplannerAddItems + "/" + id)
                 .then()
-                .statusCode(200);
+                .statusCode(200)
+                .contentType(ContentType.JSON);
     }
 
 }

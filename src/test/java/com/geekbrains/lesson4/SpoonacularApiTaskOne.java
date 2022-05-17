@@ -1,8 +1,12 @@
 package com.geekbrains.lesson4;
 
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.builder.ResponseSpecBuilder;
+import io.restassured.http.ContentType;
 import org.hamcrest.Matchers;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
@@ -18,6 +22,27 @@ public class SpoonacularApiTaskOne extends LogMain {
     private final String urlComplexSearch = "/recipes/complexSearch";
     private final String urlrecipesCuisine = "/recipes/cuisine";
 
+
+    @BeforeEach
+    void beforeTest(){
+        requestSpecificationGet = new RequestSpecBuilder()
+                .addQueryParam("apiKey", apiKey)
+                .build();
+
+        requestSpecificationPost = new RequestSpecBuilder()
+                .addQueryParam("apiKey", apiKey)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .build();
+
+        responseSpecification = new ResponseSpecBuilder()
+                .expectStatusCode(200)
+                .expectResponseTime(Matchers.lessThan(6000L))
+                .expectHeader("Content-Type", "application/json")
+                .expectStatusLine("HTTP/1.1 200 OK")
+                .expectContentType(ContentType.JSON)
+                .build();
+    }
+
     @Test
     void getVegetarianBurger() {
         String burger1 = "Falafel Burger";
@@ -25,12 +50,11 @@ public class SpoonacularApiTaskOne extends LogMain {
         String burger3 = "Walnut Lentil Burgers with Tarragon";
         given()
 
-                .queryParam("apiKey", apiKey)
+                .spec(requestSpecificationGet)
                 .queryParam("query", "burger")
                 .queryParam("diet", "vegetarian")
                 .expect()
                 .body("totalResults", equalTo(3))
-                //.body("results[0].title", equalTo("Falafel Burger"))
                 .body("results[0].title", either(containsString(burger1))
                         .or(containsString(burger2)).or(containsString(burger3)))
                 .body("results[1].title", either(containsString(burger1)).or(containsString(burger2))
@@ -41,8 +65,8 @@ public class SpoonacularApiTaskOne extends LogMain {
                 .when()
                 .get(basUrl+urlComplexSearch)
                 .then()
-                .statusCode(200)
-                .time(Matchers.lessThan(6000L));
+                .spec(responseSpecification);
+
 
     }
 
@@ -67,9 +91,9 @@ public class SpoonacularApiTaskOne extends LogMain {
                 .header("Connection", "keep-alive")
                 .when()
                 .get(basUrl+urlComplexSearch)
+                //.prettyPeek()
                 .then()
-                .statusCode(200)
-                .time(Matchers.lessThan(6000L));
+                .spec(responseSpecification);
     }
 
     @Test
@@ -87,8 +111,7 @@ public class SpoonacularApiTaskOne extends LogMain {
                 .when()
                 .get(basUrl+urlComplexSearch)
                 .then()
-                .statusCode(200)
-                .time(Matchers.lessThan(6000L));
+                .spec(responseSpecification);
     }
 
     @Test
@@ -114,8 +137,7 @@ public class SpoonacularApiTaskOne extends LogMain {
                 .get(basUrl+urlComplexSearch)
                 //.prettyPeek()
                 .then()
-                .statusCode(200)
-                .time(Matchers.lessThan(6000L));
+                .spec(responseSpecification);
     }
 
     @Test
@@ -134,15 +156,13 @@ public class SpoonacularApiTaskOne extends LogMain {
                 .when()
                 .get(basUrl+urlComplexSearch)
                 .then()
-                .statusCode(200)
-                .time(Matchers.lessThan(6000L));
+                .spec(responseSpecification);
     }
 
     @Test
     void postFalafelBurger(){
         given()
-                .queryParam("apiKey", apiKey)
-                .header("Content-Type", "application/x-www-form-urlencoded")
+                .spec(requestSpecificationPost)
                 .formParam("title", "Falafel Burger")
                 .expect()
                 .body("cuisine", equalTo("Middle Eastern"))
@@ -152,8 +172,7 @@ public class SpoonacularApiTaskOne extends LogMain {
                 .post(basUrl+urlrecipesCuisine)
                 //.prettyPeek()
                 .then()
-                .statusCode(200)
-                .time(Matchers.lessThan(6000L));
+                .spec(responseSpecification);
 
     }
 
@@ -163,8 +182,7 @@ public class SpoonacularApiTaskOne extends LogMain {
         String cuisine2 = "Thai";
 
         given()
-                .queryParam("apiKey", apiKey)
-                .header("Content-Type", "application/x-www-form-urlencoded")
+                .spec(requestSpecificationPost)
                 .formParam("title", "Thai Pasta Salad")
                 .expect()
                 .body( "cuisines", hasItems(cuisine1, cuisine2 ))
@@ -174,8 +192,7 @@ public class SpoonacularApiTaskOne extends LogMain {
                 .post(basUrl+urlrecipesCuisine)
                 //.prettyPeek()
                 .then()
-                .statusCode(200)
-                .time(Matchers.lessThan(6000L));
+                .spec(responseSpecification);
 
     }
 
@@ -186,8 +203,7 @@ public class SpoonacularApiTaskOne extends LogMain {
         String cuisine3 = "Nordic";
 
         given()
-                .queryParam("apiKey", apiKey)
-                .header("Content-Type", "application/x-www-form-urlencoded")
+                .spec(requestSpecificationPost)
                 .formParam("title", "Jen's Swedish Meatballs")
                 .expect()
                 .body( "cuisines", hasItems(cuisine1, cuisine2, cuisine3 ))
@@ -198,8 +214,7 @@ public class SpoonacularApiTaskOne extends LogMain {
                 .post(basUrl+urlrecipesCuisine)
                 //.prettyPeek()
                 .then()
-                .statusCode(200)
-                .time(Matchers.lessThan(6000L));
+                .spec(responseSpecification);
     }
 
     @Test
@@ -208,8 +223,7 @@ public class SpoonacularApiTaskOne extends LogMain {
         String cuisine2 = "Chinese";
 
         given()
-                .queryParam("apiKey", apiKey)
-                .header("Content-Type", "application/x-www-form-urlencoded")
+                .spec(requestSpecificationPost)
                 .formParam("title", "Mango Fried Rice")
                 .expect()
                 .body( "cuisines", hasItems(cuisine1, cuisine2 ))
@@ -219,15 +233,13 @@ public class SpoonacularApiTaskOne extends LogMain {
                 .post(basUrl+urlrecipesCuisine)
                 //.prettyPeek()
                 .then()
-                .statusCode(200)
-                .time(Matchers.lessThan(6000L));
+                .spec(responseSpecification);
     }
 
     @Test
     void postAfricanChickenPeanutStew(){
         given()
-                .queryParam("apiKey", apiKey)
-                .header("Content-Type", "application/x-www-form-urlencoded")
+                .spec(requestSpecificationPost)
                 .formParam("title", "African Chicken Peanut Stew")
                 .expect()
                 .body("cuisine", equalTo("African"))
@@ -237,8 +249,7 @@ public class SpoonacularApiTaskOne extends LogMain {
                 .post(basUrl+urlrecipesCuisine)
                 //.prettyPeek()
                 .then()
-                .statusCode(200)
-                .time(Matchers.lessThan(6000L));
+                .spec(responseSpecification);
 
     }
 

@@ -1,6 +1,8 @@
 package com.geekbrains.lesson4;
 
 import io.restassured.RestAssured;
+import io.restassured.specification.RequestSpecification;
+import io.restassured.specification.ResponseSpecification;
 import org.junit.jupiter.api.BeforeAll;
 
 import java.io.FileInputStream;
@@ -13,6 +15,9 @@ public class LogMain {
 
     static Properties properties = new Properties();
     private static FileInputStream inputStream;
+    ResponseSpecification responseSpecification = null;
+    RequestSpecification requestSpecificationGet = null;
+    RequestSpecification requestSpecificationPost = null;
 
     static {
         try {
