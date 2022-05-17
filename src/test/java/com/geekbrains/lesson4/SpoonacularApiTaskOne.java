@@ -1,4 +1,4 @@
-package com.geekbrains.lesson3;
+package com.geekbrains.lesson4;
 
 import org.hamcrest.Matchers;
 

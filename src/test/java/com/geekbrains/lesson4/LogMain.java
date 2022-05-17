@@ -1,4 +1,4 @@
-package com.geekbrains.lesson3;
+package com.geekbrains.lesson4;
 
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeAll;
