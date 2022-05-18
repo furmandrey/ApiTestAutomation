@@ -15,7 +15,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 
 
-public class SpoonacularApiTaskOne extends LogMain {
+public class ComplexSearchAndCuisine extends LogMain {
 
     private final String apiKey = "df2219f24e154c74a4f6fe17042f7edd";
     private final String basUrl = "https://api.spoonacular.com";
