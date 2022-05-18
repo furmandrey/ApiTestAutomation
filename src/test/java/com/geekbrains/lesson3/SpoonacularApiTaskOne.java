@@ -92,23 +92,24 @@ public class SpoonacularApiTaskOne extends LogMain {
     }
 
     @Test
-    void getDrinkMilkWormwoodPepper() {
+    void getDrinkMilkWormwood() {
 
-        String drink1 = "Cookinghow Penne Alla Vodka";
-        String drink2 = "Spiced Lassi";
+        //String drink1 = "Cookinghow Penne Alla Vodka";
+        //String drink2 = "Spiced Lassi";
 
         given()
                 //.log()
                 //.all()
                 .queryParam("apiKey", apiKey)
                 .queryParam("type", "drink")
-                .queryParam("includeIngredients", "milk, wormwood, pepper")
+                .queryParam("includeIngredients", "milk, wormwood")
                 .expect()
-                .body("totalResults", equalTo(2))
-                .body("results[0].title", either(containsString(drink1))
-                        .or(containsString(drink2)))
-                .body("results[1].title", either(containsString(drink1))
-                        .or(containsString(drink2)))
+                .body("totalResults", equalTo(1))
+                .body("results[0].title", equalTo("Milky Watermelon Drink"))
+//                .body("results[0].title", either(containsString(drink1))
+//                        .or(containsString(drink2)))
+//                .body("results[1].title", either(containsString(drink1))
+//                        .or(containsString(drink2)))
                 .header("Connection", "keep-alive")
                 .when()
                 .get(basUrl+urlComplexSearch)
