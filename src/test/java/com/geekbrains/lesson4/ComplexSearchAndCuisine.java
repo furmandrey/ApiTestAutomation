@@ -22,6 +22,10 @@ public class SpoonacularApiTaskOne extends LogMain {
     private final String urlComplexSearch = "/recipes/complexSearch";
     private final String urlrecipesCuisine = "/recipes/cuisine";
 
+    private static final String urlMealplannerAddItems = "/mealplanner/"+ (properties.getProperty("userName")) + "/items";
+    private static String id1;
+    private static String id2;
+
 
     @BeforeEach
     void beforeTest(){
@@ -115,23 +119,24 @@ public class SpoonacularApiTaskOne extends LogMain {
     }
 
     @Test
-    void getDrinkMilkWormwoodPepper() {
+    void getDrinkMilkWormwood() {
 
-        String drink1 = "Cookinghow Penne Alla Vodka";
-        String drink2 = "Spiced Lassi";
+        //String drink1 = "Cookinghow Penne Alla Vodka";
+        //String drink2 = "Spiced Lassi";
 
         given()
                 //.log()
                 //.all()
                 .queryParam("apiKey", apiKey)
                 .queryParam("type", "drink")
-                .queryParam("includeIngredients", "milk, wormwood, pepper")
+                .queryParam("includeIngredients", "milk, wormwood")
                 .expect()
-                .body("totalResults", equalTo(2))
-                .body("results[0].title", either(containsString(drink1))
-                        .or(containsString(drink2)))
-                .body("results[1].title", either(containsString(drink1))
-                        .or(containsString(drink2)))
+                .body("totalResults", equalTo(1))
+                .body("results[0].title", equalTo("Milky Watermelon Drink"))
+//                .body("results[0].title", either(containsString(drink1))
+//                        .or(containsString(drink2)))
+//                .body("results[1].title", either(containsString(drink1))
+//                        .or(containsString(drink2)))
                 .header("Connection", "keep-alive")
                 .when()
                 .get(basUrl+urlComplexSearch)
@@ -252,7 +257,99 @@ public class SpoonacularApiTaskOne extends LogMain {
                 .spec(responseSpecification);
 
     }
+    @Test
+    void addItem1ToMealPlan(){
+        id1 = given()
+                .queryParam("hash", properties.getProperty("hash"))
+                .queryParam("apiKey", properties.getProperty("apiKey"))
+                .body("{\n"
+                        + " \"date\": 20220514,\n"
+                        + " \"slot\": 1,\n"
+                        + " \"position\": 0,\n"
+                        + " \"type\": \"INGREDIENTS\",\n"
+                        + " \"value\": {\n"
+                        + " \"ingredients\": [\n"
+                        + " {\n"
+                        + " \"name\": \"1 banana\",\n"
+                        + " \"name\": \"1 potato\"\n"
+                        + " }\n"
+                        + " ]\n"
+                        + " }\n"
+                        + "}")
+                .when()
+                .post(properties.getProperty("basUrl") + urlMealplannerAddItems)
+                .prettyPeek()
+                .then()
+                .statusCode(200)
+                .extract()
+                .jsonPath()
+                .get("id")
+                .toString();
+    }
 
+    @Test
+    void addItem2ToMealPlan(){
+        id2 = given()
+                .queryParam("hash", properties.getProperty("hash"))
+                .queryParam("apiKey", properties.getProperty("apiKey"))
+                .body("{\n"
+                        + " \"date\": 20220514,\n"
+                        + " \"slot\": 1,\n"
+                        + " \"position\": 0,\n"
+                        + " \"type\": \"INGREDIENTS\",\n"
+                        + " \"value\": {\n"
+                        + " \"ingredients\": [\n"
+                        + " {\n"
+                        + " \"name\": \"1 potato\"\n"
+                        + " }\n"
+                        + " ]\n"
+                        + " }\n"
+                        + "}")
+                .when()
+                .post(properties.getProperty("basUrl") + urlMealplannerAddItems)
+                .prettyPeek()
+                .then()
+                .statusCode(200)
+                .extract()
+                .jsonPath()
+                .get("id")
+                .toString();
+    }
+
+    @AfterAll
+    static void tearDown1() {
+        given()
+                .queryParam("hash", properties.getProperty("hash"))
+                .queryParam("apiKey", properties.getProperty("apiKey"))
+                .body(
+                        "{\n"
+                                + " \"username\":" + (properties.getProperty("userName")) + ",\n"
+                                + " \"id\":" + id1 + ",\n"
+                                + " \"hash\":" + properties.getProperty("hash") + ",\n"
+                                + "}"
+                )
+                .delete(properties.getProperty("basUrl") + urlMealplannerAddItems + "/" + id1)
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON);
+    }
+    @AfterAll
+    static void tearDown2() {
+        given()
+                .queryParam("hash", properties.getProperty("hash"))
+                .queryParam("apiKey", properties.getProperty("apiKey"))
+                .body(
+                        "{\n"
+                                + " \"username\":" + (properties.getProperty("userName")) + ",\n"
+                                + " \"id\":" + id2 + ",\n"
+                                + " \"hash\":" + properties.getProperty("hash") + ",\n"
+                                + "}"
+                )
+                .delete(properties.getProperty("basUrl") + urlMealplannerAddItems + "/" + id2)
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON);
+    }
     @AfterAll
     static void end() {
         System.out.println("I'l be back!");
