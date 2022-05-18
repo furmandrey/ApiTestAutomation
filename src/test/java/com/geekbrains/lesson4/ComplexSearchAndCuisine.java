@@ -42,6 +42,7 @@ public class ComplexSearchAndCuisine extends LogMain {
                 .expectStatusCode(200)
                 .expectResponseTime(Matchers.lessThan(6000L))
                 .expectHeader("Content-Type", "application/json")
+                .expectHeader("Connection", "keep-alive")
                 .expectStatusLine("HTTP/1.1 200 OK")
                 .expectContentType(ContentType.JSON)
                 .build();
@@ -65,7 +66,7 @@ public class ComplexSearchAndCuisine extends LogMain {
                         .or(containsString(burger3)))
                 .body("results[2].title", either(containsString(burger1))
                         .or(containsString(burger2)).or(containsString(burger3)))
-                .header("Connection", "keep-alive")
+                //.header("Connection", "keep-alive")
                 .when()
                 .get(basUrl+urlComplexSearch)
                 .then()
