@@ -7,27 +7,36 @@ import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 
 public class ShoppingList extends LogMain{
 
     static RequestSpecification requestSpecification = null;
-    ResponseSpecification responseSpecification = null;
+    static ResponseSpecification responseSpecification = null;
     static String id1;
-    private final String urlGetShoppingList = properties.getProperty("basUrl")
+    static String id2 = "0";
+    private static final String urlGetShoppingList = properties.getProperty("basUrl")
             + "/mealplanner/"
             + properties.getProperty("userName")
             + "/shopping-list";
     //{{baseUrl}}/mealplanner/:username/shopping-list/items/:id
-    private static final String urlDelShoppingList = properties.getProperty("basUrl")
+/*    private final String urlDelShoppingList = properties.getProperty("basUrl")
             + "/mealplanner/"
             + properties.getProperty("userName")
             + "/shopping-list/items/"
-            + id1;
+            + id1;*/
+
+    private final String urlAddToShoppingList = properties.getProperty("basUrl")
+            + "/mealplanner/"
+            + properties.getProperty("userName")
+            + "/shopping-list/items/";
 
     @BeforeEach
     void beforeTest(){
@@ -39,7 +48,7 @@ public class ShoppingList extends LogMain{
         responseSpecification = new ResponseSpecBuilder()
                 .expectStatusCode(200)
                 .expectResponseTime(Matchers.lessThan(6000L))
-                .expectHeader("Content-Type", "application/json;charset=utf-8")
+                //.expectHeader("Content-Type", "application/json;charset=utf-8")
                 .expectHeader("Connection", "keep-alive")
                 .expectStatusLine("HTTP/1.1 200 OK")
                 .expectContentType(ContentType.JSON)
@@ -47,9 +56,29 @@ public class ShoppingList extends LogMain{
     }
 
     @Test
+    void addItem1(){
+        id1 = given()
+                .spec(requestSpecification)
+                .body("{\n"
+                        + " \"item\": \""+ (properties.getProperty("item1")) + "\",\n"
+                        + " \"aisle\": \"Baking\",\n"
+                        + " \"parse\": true\n"
+                        + "}")
+                .when()
+                .post(urlAddToShoppingList)
+                //.prettyPeek()
+                .then()
+                .extract()
+                .jsonPath()
+                .get("id")
+                .toString();
+    }
+
+    @AfterEach
     void getShoppingList(){
     given()
             .spec(requestSpecification)
+            .expect()
             .when()
             .get(urlGetShoppingList)
             //.prettyPeek()
@@ -62,8 +91,24 @@ public class ShoppingList extends LogMain{
         given()
                 .spec(requestSpecification)
                 .expect()
+                //.body(containsStringsInA(id1))
+                //.body(containsString(id1))
+                .when()
+                .get(urlGetShoppingList)
+                //.prettyPeek()
+                .then()
+                .spec(responseSpecification);
+
+        given()
+                .spec(requestSpecification)
+                .expect()
                 .body("status", equalTo("success"))
-                .when().delete(urlDelShoppingList)
+                .when()
+                .delete(properties.getProperty("basUrl")
+                        + "/mealplanner/"
+                        + properties.getProperty("userName")
+                        + "/shopping-list/items/"
+                        + id1)
                 //.prettyPeek()
                 .then()
                 .statusCode(200);
