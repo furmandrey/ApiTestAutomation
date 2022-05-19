@@ -15,9 +15,6 @@ public class LogMain {
 
     static Properties properties = new Properties();
     private static FileInputStream inputStream;
-    ResponseSpecification responseSpecification = null;
-    RequestSpecification requestSpecificationGet = null;
-    RequestSpecification requestSpecificationPost = null;
 
     static {
         try {

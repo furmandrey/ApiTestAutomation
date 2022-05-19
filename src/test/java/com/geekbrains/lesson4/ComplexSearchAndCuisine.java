@@ -3,6 +3,8 @@ package com.geekbrains.lesson4;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
+import io.restassured.specification.ResponseSpecification;
 import org.hamcrest.Matchers;
 
 import org.junit.jupiter.api.AfterAll;
@@ -16,6 +18,10 @@ import static org.hamcrest.Matchers.hasSize;
 
 
 public class ComplexSearchAndCuisine extends LogMain {
+
+    ResponseSpecification responseSpecification = null;
+    RequestSpecification requestSpecificationGet = null;
+    RequestSpecification requestSpecificationPost = null;
 
     private final String apiKey = "df2219f24e154c74a4f6fe17042f7edd";
     private final String basUrl = "https://api.spoonacular.com";
