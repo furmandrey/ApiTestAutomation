@@ -14,24 +14,17 @@ import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.Matchers.containsInAnyOrder;
 
 public class ShoppingList extends LogMain{
 
     static RequestSpecification requestSpecification = null;
     static ResponseSpecification responseSpecification = null;
     static String id1;
-    static String id2 = "0";
+    static String id2;
     private static final String urlGetShoppingList = properties.getProperty("basUrl")
             + "/mealplanner/"
             + properties.getProperty("userName")
             + "/shopping-list";
-    //{{baseUrl}}/mealplanner/:username/shopping-list/items/:id
-/*    private final String urlDelShoppingList = properties.getProperty("basUrl")
-            + "/mealplanner/"
-            + properties.getProperty("userName")
-            + "/shopping-list/items/"
-            + id1;*/
 
     private final String urlAddToShoppingList = properties.getProperty("basUrl")
             + "/mealplanner/"
@@ -74,6 +67,25 @@ public class ShoppingList extends LogMain{
                 .toString();
     }
 
+    @Test
+    void addItem2(){
+        id2 = given()
+                .spec(requestSpecification)
+                .body("{\n"
+                        + " \"item\": \""+ (properties.getProperty("item2")) + "\",\n"
+                        + " \"aisle\": \"Baking\",\n"
+                        + " \"parse\": true\n"
+                        + "}")
+                .when()
+                .post(urlAddToShoppingList)
+                //.prettyPeek()
+                .then()
+                .extract()
+                .jsonPath()
+                .get("id")
+                .toString();
+    }
+
     @AfterEach
     void getShoppingList(){
     given()
@@ -87,15 +99,16 @@ public class ShoppingList extends LogMain{
 }
 
     @AfterAll
-    static void deleteId1() {
+    static void deleteAllIds() {
         given()
                 .spec(requestSpecification)
                 .expect()
                 //.body(containsStringsInA(id1))
-                //.body(containsString(id1))
+                .body(containsString(id1))
+                .body(containsString(id2))
                 .when()
                 .get(urlGetShoppingList)
-                //.prettyPeek()
+                .prettyPeek()
                 .then()
                 .spec(responseSpecification);
 
@@ -109,6 +122,20 @@ public class ShoppingList extends LogMain{
                         + properties.getProperty("userName")
                         + "/shopping-list/items/"
                         + id1)
+                //.prettyPeek()
+                .then()
+                .statusCode(200);
+
+        given()
+                .spec(requestSpecification)
+                .expect()
+                .body("status", equalTo("success"))
+                .when()
+                .delete(properties.getProperty("basUrl")
+                        + "/mealplanner/"
+                        + properties.getProperty("userName")
+                        + "/shopping-list/items/"
+                        + id2)
                 //.prettyPeek()
                 .then()
                 .statusCode(200);

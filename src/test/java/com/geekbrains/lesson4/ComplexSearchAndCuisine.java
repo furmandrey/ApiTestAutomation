@@ -19,32 +19,42 @@ import static org.hamcrest.Matchers.hasSize;
 
 public class ComplexSearchAndCuisine extends LogMain {
 
-    ResponseSpecification responseSpecification = null;
+    ResponseSpecification responseSpecificationGet = null;
+    ResponseSpecification responseSpecificationPost = null;
     RequestSpecification requestSpecificationGet = null;
     RequestSpecification requestSpecificationPost = null;
+    static RequestSpecification requestSpecificationAdd = null;
 
-    private final String apiKey = "df2219f24e154c74a4f6fe17042f7edd";
-    private final String basUrl = "https://api.spoonacular.com";
-    private final String urlComplexSearch = "/recipes/complexSearch";
-    private final String urlrecipesCuisine = "/recipes/cuisine";
+    private final String urlComplexSearch = properties.getProperty("basUrl") + "/recipes/complexSearch";
+    private final String urlrecipesCuisine = properties.getProperty("basUrl") + "/recipes/cuisine";
 
-    private static final String urlMealplannerAddItems = "/mealplanner/"+ (properties.getProperty("userName")) + "/items";
+    private static final String urlAddItemsToMealPlanner = properties.getProperty("basUrl")
+            + "/mealplanner/"
+            + (properties.getProperty("userName"))
+            + "/items";
+
     private static String id1;
     private static String id2;
 
 
     @BeforeEach
     void beforeTest(){
+        //requests
         requestSpecificationGet = new RequestSpecBuilder()
-                .addQueryParam("apiKey", apiKey)
+                .addQueryParam("apiKey", properties.getProperty("apiKey"))
                 .build();
 
         requestSpecificationPost = new RequestSpecBuilder()
-                .addQueryParam("apiKey", apiKey)
+                .addQueryParam("apiKey", properties.getProperty("apiKey"))
                 .addHeader("Content-Type", "application/x-www-form-urlencoded")
                 .build();
-
-        responseSpecification = new ResponseSpecBuilder()
+        requestSpecificationAdd = new RequestSpecBuilder()
+                .addQueryParam("apiKey", properties.getProperty("apiKey"))
+                .addQueryParam("hash", properties.getProperty("hash"))
+                .build();
+        //requests/
+        //responses
+        responseSpecificationGet = new ResponseSpecBuilder()
                 .expectStatusCode(200)
                 .expectResponseTime(Matchers.lessThan(6000L))
                 .expectHeader("Content-Type", "application/json")
@@ -52,77 +62,79 @@ public class ComplexSearchAndCuisine extends LogMain {
                 .expectStatusLine("HTTP/1.1 200 OK")
                 .expectContentType(ContentType.JSON)
                 .build();
+
+        responseSpecificationPost = new ResponseSpecBuilder()
+                .expectStatusCode(200)
+                .expectResponseTime(Matchers.lessThan(6000L))
+                .expectHeader("Content-Type", "application/json;charset=utf-8")
+                .expectHeader("Connection", "keep-alive")
+                .expectStatusLine("HTTP/1.1 200 OK")
+                .expectContentType(ContentType.JSON)
+                .build();
+        //responses/
     }
 
     @Test
     void getVegetarianBurger() {
-        String burger1 = "Falafel Burger";
-        String burger2 = "Butternut Squash Quinoa Burgers";
-        String burger3 = "Walnut Lentil Burgers with Tarragon";
-        given()
 
+        given()
                 .spec(requestSpecificationGet)
                 .queryParam("query", "burger")
                 .queryParam("diet", "vegetarian")
                 .expect()
                 .body("totalResults", equalTo(3))
-                .body("results[0].title", either(containsString(burger1))
-                        .or(containsString(burger2)).or(containsString(burger3)))
-                .body("results[1].title", either(containsString(burger1)).or(containsString(burger2))
-                        .or(containsString(burger3)))
-                .body("results[2].title", either(containsString(burger1))
-                        .or(containsString(burger2)).or(containsString(burger3)))
-                //.header("Connection", "keep-alive")
+                .body("results[0].title", either(containsString(properties.getProperty("burger1")))
+                        .or(containsString(properties.getProperty("burger2"))).or(containsString(properties.getProperty("burger3"))))
+                .body("results[1].title", either(containsString(properties.getProperty("burger1"))).or(containsString(properties.getProperty("burger2")))
+                        .or(containsString(properties.getProperty("burger3"))))
+                .body("results[2].title", either(containsString(properties.getProperty("burger1")))
+                        .or(containsString(properties.getProperty("burger2"))).or(containsString(properties.getProperty("burger3"))))
                 .when()
-                .get(basUrl+urlComplexSearch)
+                .get(urlComplexSearch)
                 .then()
-                .spec(responseSpecification);
+                .spec(responseSpecificationGet);
 
 
     }
 
     @Test
     void getGlutenFreeBurger() {
-        String burger1 = "Turkey Burgers with Slaw";
-        String burger2 = "Walnut Lentil Burgers with Tarragon";
-        String burger3 = "Mini Zucchini Avocado Burgers";
+
         given()
 
-                .queryParam("apiKey", apiKey)
+                .spec(requestSpecificationGet)
                 .queryParam("query", "burger")
                 .queryParam("diet", "Gluten Free")
                 .expect()
                 .body("totalResults", equalTo(3))
-                .body("results[0].title", either(containsString(burger1))
-                        .or(containsString(burger2)).or(containsString(burger3)))
-                .body("results[1].title", either(containsString(burger1)).or(containsString(burger2))
-                        .or(containsString(burger3)))
-                .body("results[2].title", either(containsString(burger1))
-                        .or(containsString(burger2)).or(containsString(burger3)))
-                .header("Connection", "keep-alive")
+                .body("results[0].title", either(containsString(properties.getProperty("burger4")))
+                        .or(containsString(properties.getProperty("burger5"))).or(containsString(properties.getProperty("burger6"))))
+                .body("results[1].title", either(containsString(properties.getProperty("burger4"))).or(containsString(properties.getProperty("burger5")))
+                        .or(containsString(properties.getProperty("burger6"))))
+                .body("results[2].title", either(containsString(properties.getProperty("burger4")))
+                        .or(containsString(properties.getProperty("burger5"))).or(containsString(properties.getProperty("burger6"))))
                 .when()
-                .get(basUrl+urlComplexSearch)
+                .get(urlComplexSearch)
                 //.prettyPeek()
                 .then()
-                .spec(responseSpecification);
+                .spec(responseSpecificationGet);
     }
 
     @Test
     void getNegativeIfVegetarianContainsFish() {
         given()
 
-                .queryParam("apiKey", apiKey)
+                .spec(requestSpecificationGet)
                 .queryParam("includeIngredients", "fish")
                 .queryParam("diet", "vegetarian")
                 .expect()
                 .body("totalResults", equalTo(0))
                 .body("offset", equalTo(0))
                 .body("results", hasSize(0))
-                .header("Connection", "keep-alive")
                 .when()
-                .get(basUrl+urlComplexSearch)
+                .get(urlComplexSearch)
                 .then()
-                .spec(responseSpecification);
+                .spec(responseSpecificationGet);
     }
 
     @Test
@@ -134,7 +146,7 @@ public class ComplexSearchAndCuisine extends LogMain {
         given()
                 //.log()
                 //.all()
-                .queryParam("apiKey", apiKey)
+                .spec(requestSpecificationGet)
                 .queryParam("type", "drink")
                 .queryParam("includeIngredients", "milk, wormwood")
                 .expect()
@@ -144,19 +156,18 @@ public class ComplexSearchAndCuisine extends LogMain {
 //                        .or(containsString(drink2)))
 //                .body("results[1].title", either(containsString(drink1))
 //                        .or(containsString(drink2)))
-                .header("Connection", "keep-alive")
                 .when()
-                .get(basUrl+urlComplexSearch)
+                .get(urlComplexSearch)
                 //.prettyPeek()
                 .then()
-                .spec(responseSpecification);
+                .spec(responseSpecificationGet);
     }
 
     @Test
     void getVegetarianWithMinProtein50FillIngredients() {
         given()
 
-                .queryParam("apiKey", apiKey)
+                .spec(requestSpecificationGet)
                 .queryParam("minProtein", 51)
                 .queryParam("diet", "vegetarian")
                 .queryParam("fillIngredients", "true")
@@ -164,11 +175,10 @@ public class ComplexSearchAndCuisine extends LogMain {
                 .body("totalResults", equalTo(1))
                 .body("results[0].title", equalTo("Chia Yogurt Apricot Bowl"))
                 .body("results[0].missedIngredients[0].amount", equalTo(0.25F))
-                .header("Connection", "keep-alive")
                 .when()
-                .get(basUrl+urlComplexSearch)
+                .get(urlComplexSearch)
                 .then()
-                .spec(responseSpecification);
+                .spec(responseSpecificationGet);
     }
 
     @Test
@@ -181,71 +191,65 @@ public class ComplexSearchAndCuisine extends LogMain {
                 .body("confidence", equalTo(0.85F))
                 .header("Content-Type", "application/json")
                 .when()
-                .post(basUrl+urlrecipesCuisine)
+                .post(urlrecipesCuisine)
                 //.prettyPeek()
                 .then()
-                .spec(responseSpecification);
+                .spec(responseSpecificationGet);
 
     }
 
     @Test
     void postThaiPastaSalad(){
-        String cuisine1 = "Asian";
-        String cuisine2 = "Thai";
 
         given()
                 .spec(requestSpecificationPost)
                 .formParam("title", "Thai Pasta Salad")
                 .expect()
-                .body( "cuisines", hasItems(cuisine1, cuisine2 ))
+                .body( "cuisines", hasItems(properties.getProperty("cuisine1"), properties.getProperty("cuisine2") ))
                 .body("confidence", equalTo(0.85F))
                 .header("Content-Type", "application/json")
                 .when()
-                .post(basUrl+urlrecipesCuisine)
+                .post(urlrecipesCuisine)
                 //.prettyPeek()
                 .then()
-                .spec(responseSpecification);
+                .spec(responseSpecificationGet);
 
     }
 
     @Test
     void postJensSwedishMeatballs(){
-        String cuisine1 = "Scandinavian";
-        String cuisine2 = "European";
-        String cuisine3 = "Nordic";
 
         given()
                 .spec(requestSpecificationPost)
                 .formParam("title", "Jen's Swedish Meatballs")
                 .expect()
-                .body( "cuisines", hasItems(cuisine1, cuisine2, cuisine3 ))
+                .body( "cuisines", hasItems(properties.getProperty("cuisine3"),
+                        properties.getProperty("cuisine4"), properties.getProperty("cuisine5") ))
                 .body("confidence", equalTo(0.85F))
                 //.body("results[0].missedIngredients[0].amount", equalTo(0.25F))
                 .header("Content-Type", "application/json")
                 .when()
-                .post(basUrl+urlrecipesCuisine)
+                .post(urlrecipesCuisine)
                 //.prettyPeek()
                 .then()
-                .spec(responseSpecification);
+                .spec(responseSpecificationGet);
     }
 
     @Test
     void postMangoFriedRice(){
-        String cuisine1 = "Asian";
-        String cuisine2 = "Chinese";
 
         given()
                 .spec(requestSpecificationPost)
                 .formParam("title", "Mango Fried Rice")
                 .expect()
-                .body( "cuisines", hasItems(cuisine1, cuisine2 ))
+                .body( "cuisines", hasItems(properties.getProperty("cuisine1"), properties.getProperty("cuisine6") ))
                 .body("confidence", equalTo(0.85F))
                 .header("Content-Type", "application/json")
                 .when()
-                .post(basUrl+urlrecipesCuisine)
+                .post(urlrecipesCuisine)
                 //.prettyPeek()
                 .then()
-                .spec(responseSpecification);
+                .spec(responseSpecificationGet);
     }
 
     @Test
@@ -256,19 +260,17 @@ public class ComplexSearchAndCuisine extends LogMain {
                 .expect()
                 .body("cuisine", equalTo("African"))
                 .body("confidence", equalTo(0.85F))
-                .header("Content-Type", "application/json")
                 .when()
-                .post(basUrl+urlrecipesCuisine)
+                .post(urlrecipesCuisine)
                 //.prettyPeek()
                 .then()
-                .spec(responseSpecification);
+                .spec(responseSpecificationGet);
 
     }
     @Test
     void addItem1ToMealPlan(){
         id1 = given()
-                .queryParam("hash", properties.getProperty("hash"))
-                .queryParam("apiKey", properties.getProperty("apiKey"))
+                .spec(requestSpecificationAdd)
                 .body("{\n"
                         + " \"date\": 20220514,\n"
                         + " \"slot\": 1,\n"
@@ -284,10 +286,11 @@ public class ComplexSearchAndCuisine extends LogMain {
                         + " }\n"
                         + "}")
                 .when()
-                .post(properties.getProperty("basUrl") + urlMealplannerAddItems)
-                .prettyPeek()
+                .post(urlAddItemsToMealPlanner)
+                //prettyPeek()
                 .then()
-                .statusCode(200)
+                .spec(responseSpecificationPost)
+                //.statusCode(200)
                 .extract()
                 .jsonPath()
                 .get("id")
@@ -297,8 +300,7 @@ public class ComplexSearchAndCuisine extends LogMain {
     @Test
     void addItem2ToMealPlan(){
         id2 = given()
-                .queryParam("hash", properties.getProperty("hash"))
-                .queryParam("apiKey", properties.getProperty("apiKey"))
+                .spec(requestSpecificationAdd)
                 .body("{\n"
                         + " \"date\": 20220514,\n"
                         + " \"slot\": 1,\n"
@@ -313,10 +315,10 @@ public class ComplexSearchAndCuisine extends LogMain {
                         + " }\n"
                         + "}")
                 .when()
-                .post(properties.getProperty("basUrl") + urlMealplannerAddItems)
-                .prettyPeek()
+                .post(urlAddItemsToMealPlanner)
+               //.prettyPeek()
                 .then()
-                .statusCode(200)
+                .spec(responseSpecificationPost)
                 .extract()
                 .jsonPath()
                 .get("id")
@@ -326,8 +328,7 @@ public class ComplexSearchAndCuisine extends LogMain {
     @AfterAll
     static void tearDown1() {
         given()
-                .queryParam("hash", properties.getProperty("hash"))
-                .queryParam("apiKey", properties.getProperty("apiKey"))
+                .spec(requestSpecificationAdd)
                 .body(
                         "{\n"
                                 + " \"username\":" + (properties.getProperty("userName")) + ",\n"
@@ -335,7 +336,7 @@ public class ComplexSearchAndCuisine extends LogMain {
                                 + " \"hash\":" + properties.getProperty("hash") + ",\n"
                                 + "}"
                 )
-                .delete(properties.getProperty("basUrl") + urlMealplannerAddItems + "/" + id1)
+                .delete(urlAddItemsToMealPlanner + "/" + id1)
                 .then()
                 .statusCode(200)
                 .contentType(ContentType.JSON);
@@ -343,8 +344,7 @@ public class ComplexSearchAndCuisine extends LogMain {
     @AfterAll
     static void tearDown2() {
         given()
-                .queryParam("hash", properties.getProperty("hash"))
-                .queryParam("apiKey", properties.getProperty("apiKey"))
+                .spec(requestSpecificationAdd)
                 .body(
                         "{\n"
                                 + " \"username\":" + (properties.getProperty("userName")) + ",\n"
@@ -352,7 +352,7 @@ public class ComplexSearchAndCuisine extends LogMain {
                                 + " \"hash\":" + properties.getProperty("hash") + ",\n"
                                 + "}"
                 )
-                .delete(properties.getProperty("basUrl") + urlMealplannerAddItems + "/" + id2)
+                .delete(urlAddItemsToMealPlanner + "/" + id2)
                 .then()
                 .statusCode(200)
                 .contentType(ContentType.JSON);
