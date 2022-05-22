@@ -16,16 +16,16 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <juniper.version>5.8.2</juniper.version>
+<!--    <juniper.version>5.8.2</juniper.version>-->
   </properties>
 
   <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.13.2</version>
-      <scope>test</scope>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>junit</groupId>-->
+<!--      <artifactId>junit</artifactId>-->
+<!--      <version>4.13.2</version>-->
+<!--      <scope>test</scope>-->
+<!--    </dependency>-->
     <!-- https://mvnrepository.com/artifact/io.rest-assured/rest-assured -->
     <dependency>
       <groupId>io.rest-assured</groupId>
@@ -39,18 +39,20 @@
       <artifactId>commons-io</artifactId>
       <version>2.11.0</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <version>RELEASE</version>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>5.8.2</version>
       <scope>test</scope>
     </dependency>
-      <dependency>
-          <groupId>junit</groupId>
-          <artifactId>junit</artifactId>
-          <version>4.13.2</version>
-          <scope>test</scope>
-      </dependency>
+
+<!--      <dependency>-->
+<!--          <groupId>junit</groupId>-->
+<!--          <artifactId>junit</artifactId>-->
+<!--          <version>4.13.2</version>-->
+<!--          <scope>test</scope>-->
+<!--      </dependency>-->
 
 
   </dependencies>
