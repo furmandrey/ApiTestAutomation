@@ -12,7 +12,6 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import static okhttp3.logging.HttpLoggingInterceptor.Level.BODY;
 
 @UtilityClass
 public class RetrofitUtils {
