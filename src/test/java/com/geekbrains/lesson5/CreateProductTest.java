@@ -41,7 +41,7 @@ public class CreateProductTest {
 
     @Test
     void createProductInFoodCategoryTest() throws IOException {
-        Response<Product> response = productService.createProduct(product)
+        Response<Product> response = productService.modifyProduct(product)
                 .execute();
         id =  response.body().getId();
         assertThat(response.isSuccessful(), CoreMatchers.is(true));
