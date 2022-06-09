@@ -1,8 +1,7 @@
 package com.geekbrains.lesson5;
 
-import com.geekbrains.lesson5.api.CategoryService;
 import com.geekbrains.lesson5.api.ProductService;
-import com.geekbrains.lesson5.dto.GetCategoryResponse;
+import com.geekbrains.lesson5.dto.Product;
 import com.geekbrains.lesson5.utils.RetrofitUtils;
 import lombok.SneakyThrows;
 import okhttp3.ResponseBody;
@@ -23,9 +22,22 @@ public class GetProductsTest {
 
     @SneakyThrows
     @Test
-    void getCategoryByIdPositiveTest() {
+    void getProductsTest() {
         Response<ResponseBody> response = productService.getProducts().execute();
         assertThat(response.isSuccessful(), CoreMatchers.is(true));
+
+
+    }
+
+    @SneakyThrows
+    @Test
+    void getProductsByIdTest() {
+        Response<Product> response = productService.getProductById(1).execute();
+        assertThat(response.isSuccessful(), CoreMatchers.is(true));
+        assertThat(response.body().getId(), equalTo(1));
+        assertThat(response.body().getPrice(), equalTo(95));
+        assertThat(response.body().getTitle(), equalTo("Milk"));
+        assertThat(response.body().getCategoryTitle(), equalTo("Food"));
 
 
     }
