@@ -16,7 +16,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 
-public class ShoppingList extends LogMain{
+public class ShoppingListTest extends LogMain{
 
     static RequestSpecification requestSpecification = null;
     static ResponseSpecification responseSpecification = null;

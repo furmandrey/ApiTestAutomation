@@ -17,7 +17,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 
 
-public class ComplexSearchAndCuisine extends LogMain {
+public class ComplexSearchAndCuisineTest extends LogMain {
 
     ResponseSpecification responseSpecificationGet = null;
     ResponseSpecification responseSpecificationPost = null;
