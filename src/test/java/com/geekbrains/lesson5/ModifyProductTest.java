@@ -41,7 +41,7 @@ static ProductService productService;
         Response<Product> response = productService.createProduct(productInit)
                 .execute();
         id =  response.body().getId();
-
+        assertThat(response.isSuccessful(), CoreMatchers.is(true));
         productVice = new Product()
                 .withId(id)
                 .withTitle(title)
