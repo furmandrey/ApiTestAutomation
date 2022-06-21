@@ -4,6 +4,7 @@ import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -82,22 +83,26 @@ public class ModifyByBDProductTest {
             productID = productsVice.getId();
             session.commit();
 
-/*            productsMapper.deleteByPrimaryKey(productID);
-            session.commit();*/
-
         } finally {
             session.close();
         }
     }
 
-/*    @AfterEach
+    @AfterEach
     void afterEach(){
+       
         try {
+            String resource = "mybatis-config.xml";
+            InputStream inputStream = Resources.getResourceAsStream(resource);
+            SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+            session = sqlSessionFactory.openSession();
             db.dao.ProductsMapper productsMapper = session.getMapper(db.dao.ProductsMapper.class);
             productsMapper.deleteByPrimaryKey(productID);
             session.commit();
+        } catch (IOException e) {
+            e.printStackTrace();
         } finally {
             session.close();
         }
-    }*/
+    }
 }
