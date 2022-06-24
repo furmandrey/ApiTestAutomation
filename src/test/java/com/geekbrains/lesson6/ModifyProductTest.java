@@ -84,7 +84,7 @@ public class ModifyProductTest {
             session.close();
         }
         assertThat(products.getTitle(), equalTo(title));
-        assertThat(products.getId(), equalTo(id));
+        assertThat(products.getId(), equalTo((long)id));
         assertThat(products.getPrice(), equalTo(price));
     }
 
