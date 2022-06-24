@@ -90,7 +90,7 @@ public class ModifyByBDProductTest {
 
     @AfterEach
     void afterEach(){
-       
+
         try {
             String resource = "mybatis-config.xml";
             InputStream inputStream = Resources.getResourceAsStream(resource);
