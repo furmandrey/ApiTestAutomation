@@ -1,21 +1,18 @@
 package com.geekbrains.lesson4;
 
+
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 import org.hamcrest.Matchers;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
-
+import static org.hamcrest.Matchers.*;
 
 public class ComplexSearchAndCuisineTest extends LogMain {
 
